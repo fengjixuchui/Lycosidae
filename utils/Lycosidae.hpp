@@ -36,13 +36,13 @@ typedef NTSTATUS(__stdcall *t_nt_query_system_information)(IN ULONG, OUT PVOID, 
 BOOL check_remote_debugger_present_api()
 {
   auto b_is_dbg_present = FALSE;
-  CheckRemoteDebuggerPresent(GetCurrentProcess(), &b_is_dbg_present);
+  hash_CheckRemoteDebuggerPresent(hash_GetCurrentProcess(), &b_is_dbg_present);
   return b_is_dbg_present;
 }
 
 BOOL nt_close_invalide_handle()
 {
-  const auto nt_close = reinterpret_cast<p_nt_close>(GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "NtClose"));
+  const auto nt_close = reinterpret_cast<p_nt_close>(hash_GetProcAddress(hash_GetModuleHandleW(L"ntdll.dll"), "NtClose"));
   __try
   {
     nt_close(reinterpret_cast<HANDLE>(0x99999999ULL));
@@ -57,10 +57,10 @@ BOOL nt_close_invalide_handle()
 BOOL nt_query_information_process_process_debug_flags()
 {
   const auto process_debug_flags = 0x1f;
-  const auto nt_query_info_process = reinterpret_cast<p_nt_query_information_process>(GetProcAddress(
-                                       GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationProcess"));
+  const auto nt_query_info_process = reinterpret_cast<p_nt_query_information_process>(hash_GetProcAddress(
+                                       hash_GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationProcess"));
   unsigned long no_debug_inherit = 0;
-  const auto status = nt_query_info_process(GetCurrentProcess(), process_debug_flags, &no_debug_inherit, sizeof(DWORD),
+  const auto status = nt_query_info_process(hash_GetCurrentProcess(), process_debug_flags, &no_debug_inherit, sizeof(DWORD),
                       nullptr);
   if (status == 0x00000000 && no_debug_inherit == 0)
     return TRUE;
@@ -71,11 +71,11 @@ BOOL nt_query_information_process_process_debug_object()
 {
   // ProcessDebugFlags
   const auto process_debug_object_handle = 0x1e;
-  const auto nt_query_info_process = reinterpret_cast<p_nt_query_information_process>(GetProcAddress(
-                                       GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationProcess"));
+  const auto nt_query_info_process = reinterpret_cast<p_nt_query_information_process>(hash_GetProcAddress(
+                                       hash_GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationProcess"));
   HANDLE h_debug_object = nullptr;
   const unsigned long d_process_information_length = sizeof(ULONG) * 2;
-  const auto status = nt_query_info_process(GetCurrentProcess(), process_debug_object_handle, &h_debug_object,
+  const auto status = nt_query_info_process(hash_GetCurrentProcess(), process_debug_object_handle, &h_debug_object,
                       d_process_information_length,
                       nullptr);
   if (status == 0x00000000 && h_debug_object)
@@ -98,14 +98,14 @@ int FORCEINLINE str_cmp(const wchar_t *x, const wchar_t *y)
 BOOL nt_query_object_object_all_types_information()
 {
   //NOTE this check is unreliable, a debugger present on the system doesn't mean it's attached to you
-  const auto nt_query_object = reinterpret_cast<p_nt_query_object>(GetProcAddress(
-                                 GetModuleHandleW(L"ntdll.dll"), "NtQueryObject"));
+  const auto nt_query_object = reinterpret_cast<p_nt_query_object>(hash_GetProcAddress(
+                                 hash_GetModuleHandleW(L"ntdll.dll"), "NtQueryObject"));
   // Some vars
   ULONG size;
   // Get the size of the information needed
   auto status = nt_query_object(nullptr, 3, &size, sizeof(ULONG), &size);
   // Alocate memory for the list
-  const auto p_memory = VirtualAlloc(nullptr, (size_t)size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+  const auto p_memory = hash_VirtualAlloc(nullptr, (size_t)size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
   if (p_memory == nullptr)
     return FALSE;
   // Now we can actually retrieve the list
@@ -113,7 +113,7 @@ BOOL nt_query_object_object_all_types_information()
   // Status != STATUS_SUCCESS
   if (status != 0x00000000)
   {
-    VirtualFree(p_memory, 0, MEM_RELEASE);
+    hash_VirtualFree(p_memory, 0, MEM_RELEASE);
     return FALSE;
   }
   // We have the information we need
@@ -130,10 +130,10 @@ BOOL nt_query_object_object_all_types_information()
       // Are there any objects?
       if (pObjectTypeInfo->total_number_of_objects > 0)
       {
-        VirtualFree(p_memory, 0, MEM_RELEASE);
+        hash_VirtualFree(p_memory, 0, MEM_RELEASE);
         return TRUE;
       }
-      VirtualFree(p_memory, 0, MEM_RELEASE);
+      hash_VirtualFree(p_memory, 0, MEM_RELEASE);
       return FALSE;
     }
     // Get the address of the current entries
@@ -148,7 +148,7 @@ BOOL nt_query_object_object_all_types_information()
       tmp += sizeof(void *);
     p_obj_info_location = reinterpret_cast<unsigned char *>(tmp);
   }
-  VirtualFree(p_memory, 0, MEM_RELEASE);
+  hash_VirtualFree(p_memory, 0, MEM_RELEASE);
   return FALSE;
 }
 
@@ -170,7 +170,7 @@ BOOL process_job()
       {
         const auto process_id = job_process_id_list->ProcessIdList[i];
         // is this the current process? if so that's ok
-        if (process_id == static_cast<ULONG_PTR>(GetCurrentProcessId()))
+        if (process_id == static_cast<ULONG_PTR>(hash_GetCurrentProcessId()))
         {
           ok_processes++;
         }
@@ -184,8 +184,8 @@ BOOL process_job()
             const auto process_name = static_cast<LPTSTR>(malloc(sizeof(TCHAR) * process_name_buffer_size));
             if (process_name)
             {
-              SecureZeroMemory(process_name, sizeof(TCHAR) * process_name_buffer_size);
-              if (GetProcessImageFileName(h_job_process, process_name, process_name_buffer_size) > 0)
+              RtlSecureZeroMemory(process_name, sizeof(TCHAR) * process_name_buffer_size);
+              if (K32GetProcessImageFileNameW(h_job_process, process_name, process_name_buffer_size) > 0)
               {
                 std::wstring pnStr(process_name);
                 // ignore conhost.exe (this hosts the al-khaser executable in a console)
@@ -196,7 +196,7 @@ BOOL process_job()
               }
               free(process_name);
             }
-            CloseHandle(h_job_process);
+            hash_CloseHandle(h_job_process);
           }
         }
       }
@@ -211,15 +211,15 @@ BOOL process_job()
 BOOL set_handle_informatiom_protected_handle()
 {
   /* Create a mutex so we can get a handle */
-  const auto h_mutex = CreateMutex(nullptr, FALSE, L"Random name");
+  const auto h_mutex = CreateMutex(nullptr, FALSE, L"923482934823948");
   if (h_mutex)
   {
     /* Protect our handle */
-    SetHandleInformation(h_mutex, HANDLE_FLAG_PROTECT_FROM_CLOSE, HANDLE_FLAG_PROTECT_FROM_CLOSE);
+    hash_SetHandleInformation(h_mutex, HANDLE_FLAG_PROTECT_FROM_CLOSE, HANDLE_FLAG_PROTECT_FROM_CLOSE);
     __try
     {
       /* Then, let's try close it */
-      CloseHandle(h_mutex);
+      hash_CloseHandle(h_mutex);
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     {
@@ -231,8 +231,8 @@ BOOL set_handle_informatiom_protected_handle()
 
 BOOL titan_hide_check()
 {
-  const auto ntdll = GetModuleHandleW(L"ntdll.dll");
-  const auto nt_query_system_information = reinterpret_cast<t_nt_query_system_information>(GetProcAddress(
+  const auto ntdll = hash_GetModuleHandleW(L"ntdll.dll");
+  const auto nt_query_system_information = reinterpret_cast<t_nt_query_system_information>(hash_GetProcAddress(
         ntdll, "NtQuerySystemInformation"));
   SYSTEM_CODEINTEGRITY_INFORMATION c_info;
   c_info.Length = sizeof c_info;
