@@ -21,3 +21,12 @@ Modern anti-debug.
 - [ ] malloc
 
 - [ ] invalid_parameter_noinfo_noreturn
+
+## Third Party
+
+https://github.com/lurumdare/Win_API_Obfuscation/tree/t1ha
+
+https://github.com/lurumdare/ScyllaHideDetector
+
+https://github.com/XShar/Super_Hide_String
+
