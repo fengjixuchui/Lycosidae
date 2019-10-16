@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Super_Hide_String">
+      <UniqueIdentifier>{c1d7a0d1-0d5f-44d9-b450-15ba0303cfd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WinApi Obfuscation">
+      <UniqueIdentifier>{97e73038-edec-431d-9ec7-f35658e72aa3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="utils\crc32.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Hash.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Helpers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\LengthDisasm.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Native.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\hidestr\hide_str.hpp">
+      <Filter>Super_Hide_String</Filter>
+    </ClInclude>
+    <ClInclude Include="winapi_hash\PointerHashFunc.hpp">
+      <Filter>WinApi Obfuscation</Filter>
+    </ClInclude>
+    <ClInclude Include="winapi_hash\hash_work.hpp">
+      <Filter>WinApi Obfuscation</Filter>
+    </ClInclude>
+    <ClInclude Include="winapi_hash\export_work.hpp">
+      <Filter>WinApi Obfuscation</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\hidestr\xtea3.hpp">
+      <Filter>Super_Hide_String</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\hidestr\trash.hpp">
+      <Filter>Super_Hide_String</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\hidestr\murmurhash.hpp">
+      <Filter>Super_Hide_String</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\ScyllaHideDetector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Lycosidae.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="winapi_hash\hash_work.cpp">
+      <Filter>WinApi Obfuscation</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
