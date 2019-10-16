@@ -30,3 +30,12 @@ https://github.com/lurumdare/ScyllaHideDetector
 
 https://github.com/XShar/Super_Hide_String
 
+## Screenshots
+
+Not debugged
+
+![not_debugged.png](not_debugged.png)
+
+Debugged with ScyllaHide
+
+![debugged_scyllahide.png](debugged_scyllahide.png)
