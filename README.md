@@ -34,8 +34,8 @@ https://github.com/XShar/Super_Hide_String
 
 Not debugged
 
-![not_debugged.png](not_debugged.png)
+![not_debugged.png](img/not_debugged.png)
 
 Debugged with ScyllaHide
 
-![debugged_scyllahide.png](debugged_scyllahide.png)
+![debugged_scyllahide.png](img/debugged_scyllahide.png)
