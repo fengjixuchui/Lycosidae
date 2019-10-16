@@ -162,8 +162,8 @@ BOOL process_job()
   {
     SecureZeroMemory(job_process_id_list, job_process_struct_size);
     job_process_id_list->NumberOfProcessIdsInList = 1024;
-    if (QueryInformationJobObject(nullptr, JobObjectBasicProcessIdList, job_process_id_list, job_process_struct_size,
-                                  nullptr))
+    if (hash_QueryInformationJobObject(nullptr, JobObjectBasicProcessIdList, job_process_id_list, job_process_struct_size,
+                                       nullptr))
     {
       auto ok_processes = 0;
       for (DWORD i = 0; i < job_process_id_list->NumberOfAssignedProcesses; i++)
@@ -177,7 +177,7 @@ BOOL process_job()
         else
         {
           // find the process name for this job process
-          const auto h_job_process = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, static_cast<DWORD>(process_id));
+          const auto h_job_process = hash_OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, static_cast<DWORD>(process_id));
           if (h_job_process != nullptr)
           {
             const auto process_name_buffer_size = 4096;
@@ -185,7 +185,7 @@ BOOL process_job()
             if (process_name)
             {
               RtlSecureZeroMemory(process_name, sizeof(TCHAR) * process_name_buffer_size);
-              if (K32GetProcessImageFileNameW(h_job_process, process_name, process_name_buffer_size) > 0)
+              if (hash_K32GetProcessImageFileNameW(h_job_process, process_name, process_name_buffer_size) > 0)
               {
                 std::wstring pnStr(process_name);
                 // ignore conhost.exe (this hosts the al-khaser executable in a console)
@@ -211,7 +211,7 @@ BOOL process_job()
 BOOL set_handle_informatiom_protected_handle()
 {
   /* Create a mutex so we can get a handle */
-  const auto h_mutex = CreateMutex(nullptr, FALSE, L"923482934823948");
+  const auto h_mutex = hash_CreateMutexW(nullptr, FALSE, L"923482934823948");
   if (h_mutex)
   {
     /* Protect our handle */

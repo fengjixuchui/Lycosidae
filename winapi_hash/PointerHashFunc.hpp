@@ -373,3 +373,13 @@ BOOL (*temp_FreeLibrary)(HMODULE hLibModule
                         ) = nullptr;
 
 HMODULE (*temp_LoadLibraryAA)(LPCSTR lpLibFileName) = nullptr;
+
+BOOL(*temp_QueryInformationJobObject)(HANDLE             hJob,
+                                      JOBOBJECTINFOCLASS JobObjectInformationClass,
+                                      LPVOID             lpJobObjectInformation,
+                                      DWORD              cbJobObjectInformationLength,
+                                      LPDWORD            lpReturnLength) = nullptr;
+
+DWORD(*temp_K32GetProcessImageFileNameW)(HANDLE hProcess,
+    LPWSTR  lpImageFileName,
+    DWORD  nSize) = nullptr;

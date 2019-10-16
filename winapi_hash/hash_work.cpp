@@ -1337,3 +1337,39 @@ HMODULE hash_LoadLibraryAA(LPCSTR lpLibFileName)
                        strlen(func), STRONG_SEED));
   return temp_LoadLibraryAA(lpLibFileName);
 }
+
+BOOL hash_QueryInformationJobObject(HANDLE             hJob,
+                                    JOBOBJECTINFOCLASS JobObjectInformationClass,
+                                    LPVOID             lpJobObjectInformation,
+                                    DWORD              cbJobObjectInformationLength,
+                                    LPDWORD            lpReturnLength)
+{
+  const char *func = (LPCSTR)PRINT_HIDE_STR("QueryInformationJobObject");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
+  temp_QueryInformationJobObject = static_cast<BOOL(*)(HANDLE,
+                                   JOBOBJECTINFOCLASS,
+                                   LPVOID,
+                                   DWORD,
+                                   LPDWORD            )>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
+                                       strlen(func), STRONG_SEED));
+  return temp_QueryInformationJobObject(            hJob,
+         JobObjectInformationClass,
+         lpJobObjectInformation,
+         cbJobObjectInformationLength,
+         lpReturnLength);
+}
+
+DWORD hash_K32GetProcessImageFileNameW(HANDLE hProcess,
+                                       LPWSTR  lpImageFileName,
+                                       DWORD  nSize)
+{
+  const char *func = (LPCSTR)PRINT_HIDE_STR("K32GetProcessImageFileNameW");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
+  temp_K32GetProcessImageFileNameW = static_cast<DWORD(*)(HANDLE,
+                                     LPWSTR,
+                                     DWORD  )>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
+                                         strlen(func), STRONG_SEED));
+  return temp_K32GetProcessImageFileNameW(hProcess,
+                                          lpImageFileName,
+                                          nSize);
+}

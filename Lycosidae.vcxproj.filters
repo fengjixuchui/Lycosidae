@@ -13,11 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Super_Hide_String">
-      <UniqueIdentifier>{c1d7a0d1-0d5f-44d9-b450-15ba0303cfd1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="WinApi Obfuscation">
       <UniqueIdentifier>{97e73038-edec-431d-9ec7-f35658e72aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hide Strings">
+      <UniqueIdentifier>{c1d7a0d1-0d5f-44d9-b450-15ba0303cfd1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -37,7 +37,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utils\hidestr\hide_str.hpp">
-      <Filter>Super_Hide_String</Filter>
+      <Filter>Hide Strings</Filter>
     </ClInclude>
     <ClInclude Include="winapi_hash\PointerHashFunc.hpp">
       <Filter>WinApi Obfuscation</Filter>
@@ -49,13 +49,13 @@
       <Filter>WinApi Obfuscation</Filter>
     </ClInclude>
     <ClInclude Include="utils\hidestr\xtea3.hpp">
-      <Filter>Super_Hide_String</Filter>
+      <Filter>Hide Strings</Filter>
     </ClInclude>
     <ClInclude Include="utils\hidestr\trash.hpp">
-      <Filter>Super_Hide_String</Filter>
+      <Filter>Hide Strings</Filter>
     </ClInclude>
     <ClInclude Include="utils\hidestr\murmurhash.hpp">
-      <Filter>Super_Hide_String</Filter>
+      <Filter>Hide Strings</Filter>
     </ClInclude>
     <ClInclude Include="utils\ScyllaHideDetector.hpp">
       <Filter>Header Files</Filter>
