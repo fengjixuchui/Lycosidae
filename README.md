@@ -12,12 +12,12 @@ Modern anti-debug.
 
 ### Import
 
-- [] memcpy
+- [ ] memcpy
 
-- [] mbstowcs
+- [ ] mbstowcs
 
-- [] free
+- [ ] free
 
-- [] malloc
+- [ ] malloc
 
-- [] invalid_parameter_noinfo_noreturn
+- [ ] invalid_parameter_noinfo_noreturn
