@@ -4,20 +4,20 @@ Modern anti-debug.
 
 ## Features
 
-[x] Import no leak
+- [x] Import no leak
 
-[x] Strings no leak
+- [x] Strings no leak
 
 ## TODO
 
 ### Import
 
-[ ] memcpy
+- [] memcpy
 
-[ ] mbstowcs
+- [] mbstowcs
 
-[ ] free
+- [] free
 
-[ ] malloc
+- [] malloc
 
-[ ] invalid_parameter_noinfo_noreturn
+- [] invalid_parameter_noinfo_noreturn
