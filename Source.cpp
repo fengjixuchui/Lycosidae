@@ -46,54 +46,54 @@ int main()
     if (nt_close_invalide_handle() != FALSE)
     {
 #ifndef LYCOSIDAE_LOG
-      log("CloseHandle with an invalide handle detected\r\n");
+      log((LPCSTR)PRINT_HIDE_STR("CloseHandle with an invalide handle detected\r\n"));
 #endif
     }
     if (set_handle_informatiom_protected_handle() != FALSE)
     {
 #ifndef LYCOSIDAE_LOG
-      log("CloseHandle protected handle trick  detected\r\n");
+      log((LPCSTR)PRINT_HIDE_STR("CloseHandle protected handle trick  detected\r\n"));
 #endif
     }
     if (check_remote_debugger_present_api() != FALSE)
     {
 #ifndef LYCOSIDAE_LOG
-      log("CheckRemoteDebuggerPresent detected\r\n");
+      log((LPCSTR)PRINT_HIDE_STR("CheckRemoteDebuggerPresent detected\r\n"));
 #endif
     }
     if (nt_query_information_process_process_debug_flags() != FALSE)
     {
 #ifndef LYCOSIDAE_LOG
-      log("NtQueryInformationProcess with ProcessDebugFlags detected\r\n");
+      log((LPCSTR)PRINT_HIDE_STR("NtQueryInformationProcess with ProcessDebugFlags detected\r\n"));
 #endif
     }
     if (nt_query_information_process_process_debug_object() != FALSE)
     {
 #ifndef LYCOSIDAE_LOG
-      log("NtQueryInformationProcess with ProcessDebugObject detected\r\n");
+      log((LPCSTR)PRINT_HIDE_STR("NtQueryInformationProcess with ProcessDebugObject detected\r\n"));
 #endif
     }
     if (nt_query_object_object_all_types_information() != FALSE)
     {
 #ifndef LYCOSIDAE_LOG
-      log("NtQueryObject with ObjectAllTypesInformation detected\r\n");
+      log((LPCSTR)PRINT_HIDE_STR("NtQueryObject with ObjectAllTypesInformation detected\r\n"));
 #endif
     }
     if (process_job() != FALSE)
     {
 #ifndef LYCOSIDAE_LOG
-      log("If process is in a job detected\r\n");
+      log((LPCSTR)PRINT_HIDE_STR("If process is in a job detected\r\n"));
 #endif
     }
     // TitanHide detection
     if (titan_hide_check() != FALSE)
     {
 #ifndef LYCOSIDAE_LOG
-      log("TitanHide detected\r\n");
+      log((LPCSTR)PRINT_HIDE_STR("TitanHide detected\r\n"));
 #endif
     }
   }
-  log("Foo program. Check source code.\r\n");
+  log((LPCSTR)PRINT_HIDE_STR("Foo program. Check source code.\r\n"));
   getchar();
   return 0;
 }

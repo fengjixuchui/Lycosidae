@@ -7,6 +7,19 @@
 #include <xstring>
 #include <cassert>
 
+#pragma warning (disable : 4996)
+__forceinline const wchar_t *GetWC_l(const char *c)
+{
+  const size_t cSize = strlen(c) + 1;
+  wchar_t *wc = new wchar_t[cSize];
+  mbstowcs(wc, c, cSize);
+  return wc;
+}
+
+// Super Hide String
+#include "hidestr/hide_str.hpp"
+#define NTDLL_ GetWC_l((LPCSTR)PRINT_HIDE_STR("ntdll.dll"))
+
 #define DEBUG_READ_EVENT 0x0001
 #define DEBUG_PROCESS_ASSIGN 0x0002
 #define DEBUG_SET_INFORMATION 0x0004
@@ -40,12 +53,17 @@ BOOL check_remote_debugger_present_api()
   return b_is_dbg_present;
 }
 
+void nt_close_invalide_handle_helper()
+{
+  const auto nt_close = reinterpret_cast<p_nt_close>(hash_GetProcAddress(hash_GetModuleHandleW(NTDLL_), (LPCSTR)PRINT_HIDE_STR("NtClose")));
+  nt_close(reinterpret_cast<HANDLE>(0x99999999ULL));
+}
+
 BOOL nt_close_invalide_handle()
 {
-  const auto nt_close = reinterpret_cast<p_nt_close>(hash_GetProcAddress(hash_GetModuleHandleW(L"ntdll.dll"), "NtClose"));
   __try
   {
-    nt_close(reinterpret_cast<HANDLE>(0x99999999ULL));
+    nt_close_invalide_handle_helper();
   }
   __except (EXCEPTION_EXECUTE_HANDLER)
   {
@@ -58,7 +76,7 @@ BOOL nt_query_information_process_process_debug_flags()
 {
   const auto process_debug_flags = 0x1f;
   const auto nt_query_info_process = reinterpret_cast<p_nt_query_information_process>(hash_GetProcAddress(
-                                       hash_GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationProcess"));
+                                       hash_GetModuleHandleW(NTDLL_), (LPCSTR)PRINT_HIDE_STR("NtQueryInformationProcess")));
   unsigned long no_debug_inherit = 0;
   const auto status = nt_query_info_process(hash_GetCurrentProcess(), process_debug_flags, &no_debug_inherit, sizeof(DWORD),
                       nullptr);
@@ -72,7 +90,7 @@ BOOL nt_query_information_process_process_debug_object()
   // ProcessDebugFlags
   const auto process_debug_object_handle = 0x1e;
   const auto nt_query_info_process = reinterpret_cast<p_nt_query_information_process>(hash_GetProcAddress(
-                                       hash_GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationProcess"));
+                                       hash_GetModuleHandleW(NTDLL_), (LPCSTR)PRINT_HIDE_STR("NtQueryInformationProcess")));
   HANDLE h_debug_object = nullptr;
   const unsigned long d_process_information_length = sizeof(ULONG) * 2;
   const auto status = nt_query_info_process(hash_GetCurrentProcess(), process_debug_object_handle, &h_debug_object,
@@ -99,7 +117,7 @@ BOOL nt_query_object_object_all_types_information()
 {
   //NOTE this check is unreliable, a debugger present on the system doesn't mean it's attached to you
   const auto nt_query_object = reinterpret_cast<p_nt_query_object>(hash_GetProcAddress(
-                                 hash_GetModuleHandleW(L"ntdll.dll"), "NtQueryObject"));
+                                 hash_GetModuleHandleW(NTDLL_), (LPCSTR)PRINT_HIDE_STR("NtQueryObject")));
   // Some vars
   ULONG size;
   // Get the size of the information needed
@@ -124,7 +142,7 @@ BOOL nt_query_object_object_all_types_information()
   {
     const auto pObjectTypeInfo = reinterpret_cast<pobject_type_information>(p_obj_info_location);
     // The debug object will always be present
-    if (str_cmp((const wchar_t *)(L"DebugObject"),
+    if (str_cmp((const wchar_t *)(GetWC_l((LPCSTR)PRINT_HIDE_STR("DebugObject"))),
                 (const wchar_t *)(pObjectTypeInfo->type_name.Buffer)) == 0)
     {
       // Are there any objects?
@@ -189,7 +207,7 @@ BOOL process_job()
               {
                 std::wstring pnStr(process_name);
                 // ignore conhost.exe (this hosts the al-khaser executable in a console)
-                if (pnStr.find(static_cast<std::wstring>(L"\\Windows\\System32\\conhost.exe")) != std::string::npos)
+                if (pnStr.find(static_cast<std::wstring>(GetWC_l((LPCSTR)PRINT_HIDE_STR("\\Windows\\System32\\conhost.exe")))) != std::string::npos)
                 {
                   ok_processes++;
                 }
@@ -208,32 +226,31 @@ BOOL process_job()
   return found_problem;
 }
 
+void set_handle_informatiom_protected_handle_helper()
+{
+  const auto h_mutex = hash_CreateMutexW(nullptr, FALSE, GetWC_l((LPCSTR)PRINT_HIDE_STR("923482934823948")));
+  hash_SetHandleInformation(h_mutex, HANDLE_FLAG_PROTECT_FROM_CLOSE, HANDLE_FLAG_PROTECT_FROM_CLOSE);
+  hash_CloseHandle(h_mutex);
+}
+
 BOOL set_handle_informatiom_protected_handle()
 {
-  /* Create a mutex so we can get a handle */
-  const auto h_mutex = hash_CreateMutexW(nullptr, FALSE, L"923482934823948");
-  if (h_mutex)
+  __try
   {
-    /* Protect our handle */
-    hash_SetHandleInformation(h_mutex, HANDLE_FLAG_PROTECT_FROM_CLOSE, HANDLE_FLAG_PROTECT_FROM_CLOSE);
-    __try
-    {
-      /* Then, let's try close it */
-      hash_CloseHandle(h_mutex);
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-      return TRUE;
-    }
+    set_handle_informatiom_protected_handle_helper();
+  }
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {
+    return TRUE;
   }
   return FALSE;
 }
 
 BOOL titan_hide_check()
 {
-  const auto ntdll = hash_GetModuleHandleW(L"ntdll.dll");
+  const auto ntdll = hash_GetModuleHandleW(NTDLL_);
   const auto nt_query_system_information = reinterpret_cast<t_nt_query_system_information>(hash_GetProcAddress(
-        ntdll, "NtQuerySystemInformation"));
+        ntdll, (LPCSTR)PRINT_HIDE_STR("NtQuerySystemInformation")));
   SYSTEM_CODEINTEGRITY_INFORMATION c_info;
   c_info.Length = sizeof c_info;
   nt_query_system_information(SystemCodeIntegrityInformation, &c_info, sizeof c_info, nullptr);

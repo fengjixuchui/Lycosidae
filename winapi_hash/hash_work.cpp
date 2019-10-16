@@ -53,12 +53,13 @@ LPVOID hash_VirtualAlloc(LPVOID lpAddress,
                          DWORD flAllocationType,
                          DWORD flProtect)
 {
-  const auto _hash = t1ha0("VirtualAlloc", strlen("VirtualAlloc"), STRONG_SEED);
+  const char *func = (LPCSTR)PRINT_HIDE_STR("VirtualAlloc");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
   temp_VirtualAlloc = static_cast<LPVOID(WINAPI *)(LPVOID,
                       SIZE_T,
                       DWORD,
                       DWORD)>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
-                                      strlen("VirtualAlloc"),
+                                      strlen(func),
                                       STRONG_SEED));
   return temp_VirtualAlloc(lpAddress, dwSize, flAllocationType, flProtect);
 }
@@ -67,11 +68,12 @@ BOOL hash_VirtualFree(LPVOID lpAddress,
                       SIZE_T dwSize,
                       DWORD dwFreeType)
 {
-  const auto _hash = t1ha0("VirtualFree", strlen("VirtualFree"), STRONG_SEED);
+  const char *func = (LPCSTR)PRINT_HIDE_STR("VirtualFree");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
   temp_VirtualFree = static_cast<BOOL(WINAPI *)(LPVOID,
                      SIZE_T,
                      DWORD)>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
-                                     strlen("VirtualFree"),
+                                     strlen(func),
                                      STRONG_SEED));
   return temp_VirtualFree(lpAddress, dwSize, dwFreeType);
 }
@@ -186,19 +188,21 @@ HMODULE hash_GetModuleHandleA(LPCSTR lpModuleName)
 
 HMODULE hash_GetModuleHandleW(LPCWSTR lpModuleName)
 {
-  const auto _hash = t1ha0("GetModuleHandleW", strlen("GetModuleHandleW"), STRONG_SEED);
+  const char *func = (LPCSTR)PRINT_HIDE_STR("GetModuleHandleW");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
   temp_GetModuleHandleW = static_cast<HMODULE(WINAPI *)(LPCWSTR)>(get_api(
-                            _hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"), strlen("GetModuleHandleW"), STRONG_SEED));
+                            _hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"), strlen(func), STRONG_SEED));
   return temp_GetModuleHandleW(lpModuleName);
 }
 
 FARPROC hash_GetProcAddress(HMODULE hModule,
                             LPCSTR lpProcName)
 {
-  const auto _hash = t1ha0("GetProcAddress", strlen("GetProcAddress"), STRONG_SEED);
+  const char *func = (LPCSTR)PRINT_HIDE_STR("GetProcAddress");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
   temp_GetProcAddress = static_cast<FARPROC(WINAPI *)(HMODULE,
                         LPCSTR)>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
-                                         strlen("GetProcAddress"),
+                                         strlen(func),
                                          STRONG_SEED));
   return temp_GetProcAddress(hModule,
                              lpProcName);
@@ -407,11 +411,12 @@ HANDLE hash_CreateMutexW(LPSECURITY_ATTRIBUTES lpMutexAttributes,
                          BOOL bInitialOwner,
                          LPCWSTR lpName)
 {
-  const auto _hash = t1ha0("CreateMutexW", strlen("CreateMutexW"), STRONG_SEED);
+  const char *func = (LPCSTR)PRINT_HIDE_STR("CreateMutexW");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
   temp_CreateMutexW = static_cast<HANDLE(WINAPI *)(LPSECURITY_ATTRIBUTES,
                       BOOL,
                       LPCWSTR)>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
-                                        strlen("CreateMutexW"),
+                                        strlen(func),
                                         STRONG_SEED));
   return temp_CreateMutexW(lpMutexAttributes,
                            bInitialOwner,
@@ -812,9 +817,10 @@ BOOL hash_IsBadReadPtr(const VOID *lp,
 
 HANDLE hash_GetCurrentProcess()
 {
-  const auto _hash = t1ha0("GetCurrentProcess", strlen("GetCurrentProcess"), STRONG_SEED);
+  const char *func = (LPCSTR)PRINT_HIDE_STR("GetCurrentProcess");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
   temp_GetCurrentProcess = static_cast<HANDLE(WINAPI *)()>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
-                           strlen("GetCurrentProcess"),
+                           strlen(func),
                            STRONG_SEED));
   return temp_GetCurrentProcess();
 }
@@ -840,9 +846,10 @@ void hash_Sleep(DWORD dwMilliseconds)
 
 DWORD hash_GetCurrentProcessId()
 {
-  const auto _hash = t1ha0("GetCurrentProcessId", strlen("GetCurrentProcessId"), STRONG_SEED);
-  temp_GetCurrentProcessId = static_cast<DWORD(WINAPI *)()>(get_api(_hash, "kernel32.dll",
-                             strlen("GetCurrentProcessId"), STRONG_SEED));
+  const char *func = (LPCSTR)PRINT_HIDE_STR("GetCurrentProcessId");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
+  temp_GetCurrentProcessId = static_cast<DWORD(WINAPI *)()>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
+                             strlen(func), STRONG_SEED));
   return temp_GetCurrentProcessId();
 }
 
@@ -850,11 +857,12 @@ HANDLE hash_OpenProcess(DWORD dwDesiredAccess,
                         BOOL bInheritHandle,
                         DWORD dwProcessId)
 {
-  const auto _hash = t1ha0("OpenProcess", strlen("OpenProcess"), STRONG_SEED);
+  const char *func = (LPCSTR)PRINT_HIDE_STR("OpenProcess");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
   temp_OpenProcess = static_cast<HANDLE(WINAPI *)(DWORD,
                      BOOL,
                      DWORD)>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
-                                     strlen("OpenProcess"),
+                                     strlen(func),
                                      STRONG_SEED));
   return temp_OpenProcess(dwDesiredAccess,
                           bInheritHandle,
@@ -1035,9 +1043,10 @@ BOOL hash_TerminateProcess(HANDLE hProcess,
 
 BOOL hash_CloseHandle(HANDLE hObject)
 {
-  const auto _hash = t1ha0("CloseHandle", strlen("CloseHandle"), STRONG_SEED);
+  const char *func = (LPCSTR)PRINT_HIDE_STR("CloseHandle");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
   temp_CloseHandle = static_cast<BOOL(WINAPI *)(HANDLE)>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
-                     strlen("CloseHandle"),
+                     strlen(func),
                      STRONG_SEED));
   return temp_CloseHandle(hObject);
 }
@@ -1073,11 +1082,12 @@ BOOL hash_SetHandleInformation(HANDLE hObject,
                                DWORD dwMask,
                                DWORD dwFlags)
 {
-  const auto _hash = t1ha0("SetHandleInformation", strlen("SetHandleInformation"), STRONG_SEED);
+  const char *func = (LPCSTR)PRINT_HIDE_STR("SetHandleInformation");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
   temp_SetHandleInformation = static_cast<BOOL(WINAPI *)(HANDLE,
                               DWORD,
                               DWORD)>(get_api(
-                                        _hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"), strlen("SetHandleInformation"), STRONG_SEED));
+                                        _hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"), strlen(func), STRONG_SEED));
   return temp_SetHandleInformation(hObject,
                                    dwMask,
                                    dwFlags);
@@ -1134,7 +1144,7 @@ int hash_MultiByteToWideChar(UINT CodePage,
                              _In_NLS_string_(cbMultiByte)LPCCH,
                              int,
                              LPWSTR,
-                             int)>(get_api(_hash, "kernel32.dll",
+                             int)>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
                                    strlen("MultiByteToWideChar"), STRONG_SEED));
   return temp_MultiByteToWideChar(CodePage,
                                   dwFlags,
@@ -1166,10 +1176,11 @@ BOOL hash_DeleteTimerQueueEx(HANDLE TimerQueue,
 BOOL hash_CheckRemoteDebuggerPresent(HANDLE hProcess,
                                      PBOOL pbDebuggerPresent)
 {
-  const auto _hash = t1ha0("CheckRemoteDebuggerPresent", strlen("CheckRemoteDebuggerPresent"), STRONG_SEED);
+  const char *func = (LPCSTR)PRINT_HIDE_STR("CheckRemoteDebuggerPresent");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
   temp_CheckRemoteDebuggerPresent = static_cast<BOOL(WINAPI *)(HANDLE,
                                     PBOOL)>(get_api(
-                                          _hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"), strlen("CheckRemoteDebuggerPresent"), STRONG_SEED));
+                                          _hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"), strlen(func), STRONG_SEED));
   return temp_CheckRemoteDebuggerPresent(hProcess,
                                          pbDebuggerPresent);
 }
