@@ -4,6 +4,8 @@
 
 ### ScyllaHideDetector
 
+- khash
+
 - ntdll_restore
 
 - kernelbase_restore
