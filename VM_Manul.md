@@ -22,6 +22,8 @@
 
 - set_handle_informatiom_protected_handle
 
-For strong import protection add virtualizatino to hash_ functions
+### Notes
+
+For strong import protection add virtualization to hash_ functions
 
 ![hash.png](img/hash.png)
