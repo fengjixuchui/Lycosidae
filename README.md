@@ -10,6 +10,8 @@ Modern anti-debug.
 
 ## TODO
 
+- [ ] x86 support
+
 ### Import
 
 - [ ] memcpy
