@@ -46,7 +46,7 @@ typedef NTSTATUS(NTAPI *p_nt_query_information_process)(IN HANDLE, IN UINT, OUT 
 typedef NTSTATUS(WINAPI *p_nt_query_object)(IN HANDLE, IN UINT, OUT PVOID, IN ULONG, OUT PULONG);
 typedef NTSTATUS(__stdcall *t_nt_query_system_information)(IN ULONG, OUT PVOID, IN ULONG, OUT PULONG);
 
-BOOL check_remote_debugger_present_api()
+__forceinline BOOL check_remote_debugger_present_api()
 {
   auto b_is_dbg_present = FALSE;
   hash_CheckRemoteDebuggerPresent(hash_GetCurrentProcess(), &b_is_dbg_present);
@@ -72,7 +72,7 @@ BOOL nt_close_invalide_handle()
   return FALSE;
 }
 
-BOOL nt_query_information_process_process_debug_flags()
+__forceinline BOOL nt_query_information_process_process_debug_flags()
 {
   const auto process_debug_flags = 0x1f;
   const auto nt_query_info_process = reinterpret_cast<p_nt_query_information_process>(hash_GetProcAddress(
@@ -85,7 +85,7 @@ BOOL nt_query_information_process_process_debug_flags()
   return FALSE;
 }
 
-BOOL nt_query_information_process_process_debug_object()
+__forceinline BOOL nt_query_information_process_process_debug_object()
 {
   // ProcessDebugFlags
   const auto process_debug_object_handle = 0x1e;
@@ -101,7 +101,7 @@ BOOL nt_query_information_process_process_debug_object()
   return FALSE;
 }
 
-int FORCEINLINE str_cmp(const wchar_t *x, const wchar_t *y)
+__forceinline int str_cmp(const wchar_t *x, const wchar_t *y)
 {
   while (*x)
   {
@@ -113,7 +113,7 @@ int FORCEINLINE str_cmp(const wchar_t *x, const wchar_t *y)
   return *static_cast<const wchar_t *>(x) - *static_cast<const wchar_t *>(y);
 }
 
-BOOL nt_query_object_object_all_types_information()
+__forceinline BOOL nt_query_object_object_all_types_information()
 {
   //NOTE this check is unreliable, a debugger present on the system doesn't mean it's attached to you
   const auto nt_query_object = reinterpret_cast<p_nt_query_object>(hash_GetProcAddress(
@@ -170,7 +170,7 @@ BOOL nt_query_object_object_all_types_information()
   return FALSE;
 }
 
-BOOL process_job()
+__forceinline BOOL process_job()
 {
   auto found_problem = FALSE;
   const DWORD job_process_struct_size = sizeof(JOBOBJECT_BASIC_PROCESS_ID_LIST) + sizeof(ULONG_PTR) * 1024;
@@ -246,7 +246,7 @@ BOOL set_handle_informatiom_protected_handle()
   return FALSE;
 }
 
-BOOL titan_hide_check()
+__forceinline BOOL titan_hide_check()
 {
   const auto ntdll = hash_GetModuleHandleW(NTDLL_);
   const auto nt_query_system_information = reinterpret_cast<t_nt_query_system_information>(hash_GetProcAddress(
