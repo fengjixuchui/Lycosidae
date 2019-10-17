@@ -2,6 +2,11 @@
 
 Modern anti-debug.
 
+## Install
+- Build t1ha
+- Link `t1ha-static.lib` to project
+- Build Lycosidae
+
 ## Features
 
 - [x] Import no leak
