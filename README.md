@@ -17,6 +17,10 @@ Modern anti-debug.
 
 - [ ] x86 support
 
+- [ ] byte compare (https://forum.exetools.com/showpost.php?p=118480&postcount=2)
+
+- [ ] NtQuerySystemInformation_SystemKernelDebuggerInformation & SharedUserData_KernelDebugger
+
 ### Import
 
 - [ ] memcpy
