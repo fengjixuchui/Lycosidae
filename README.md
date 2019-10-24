@@ -21,6 +21,8 @@ Modern anti-debug.
 
 - [ ] NtQuerySystemInformation_SystemKernelDebuggerInformation & SharedUserData_KernelDebugger
 
+- [ ] hiding thread from debugger (argument ID thread)
+
 ### Import
 
 - [ ] memcpy
