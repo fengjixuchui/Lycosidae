@@ -30,6 +30,7 @@ int main()
     kernelbase_restore((LPCSTR)PRINT_HIDE_STR("OutputDebugStringA"));
     kernelbase_restore((LPCSTR)PRINT_HIDE_STR("GetLocalTime"));
     kernelbase_restore((LPCSTR)PRINT_HIDE_STR("GetSystemTime"));
+    kernelbase_restore((LPCSTR)PRINT_HIDE_STR("GetSystemTimeAsFileTime"));
     user32_restore((LPCSTR)PRINT_HIDE_STR("NtUserBlockInput"));
     user32_restore((LPCSTR)PRINT_HIDE_STR("NtUserQueryWindow"));
     user32_restore((LPCSTR)PRINT_HIDE_STR("NtUserFindWindowEx"));
