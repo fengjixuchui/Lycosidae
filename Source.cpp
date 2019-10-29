@@ -93,6 +93,18 @@ int main()
       log((LPCSTR)PRINT_HIDE_STR("TitanHide detected\r\n"));
 #endif
     }
+    if (NtQuerySystemInformation_SystemKernelDebuggerInformation() != FALSE)
+    {
+#ifndef LYCOSIDAE_LOG
+      log((LPCSTR)PRINT_HIDE_STR("NtQuerySystemInformation_SystemKernelDebuggerInformation detected\r\n"));
+#endif
+    }
+    if (SharedUserData_KernelDebugger() != FALSE)
+    {
+#ifndef LYCOSIDAE_LOG
+      log((LPCSTR)PRINT_HIDE_STR("SharedUserData_KernelDebugger detected\r\n"));
+#endif
+    }
   }
   log((LPCSTR)PRINT_HIDE_STR("Foo program. Check source code.\r\n"));
   getchar();

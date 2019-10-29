@@ -41,6 +41,12 @@ typedef struct object_all_information
   object_type_information object_type_information[1];
 } object_all_information, *pobject_all_information;
 
+typedef struct _SYSTEM_KERNEL_DEBUGGER_INFORMATION
+{
+  BOOLEAN KernelDebuggerEnabled;
+  BOOLEAN KernelDebuggerNotPresent;
+} SYSTEM_KERNEL_DEBUGGER_INFORMATION, * PSYSTEM_KERNEL_DEBUGGER_INFORMATION;
+
 typedef NTSTATUS(NTAPI *p_nt_close)(HANDLE);
 typedef NTSTATUS(NTAPI *p_nt_query_information_process)(IN HANDLE, IN UINT, OUT PVOID, IN ULONG, OUT PULONG);
 typedef NTSTATUS(WINAPI *p_nt_query_object)(IN HANDLE, IN UINT, OUT PVOID, IN ULONG, OUT PULONG);
@@ -87,7 +93,6 @@ __forceinline BOOL nt_query_information_process_process_debug_flags()
 
 __forceinline BOOL nt_query_information_process_process_debug_object()
 {
-  // ProcessDebugFlags
   const auto process_debug_object_handle = 0x1e;
   const auto nt_query_info_process = reinterpret_cast<p_nt_query_information_process>(hash_GetProcAddress(
                                        hash_GetModuleHandleW(NTDLL_), (LPCSTR)PRINT_HIDE_STR("NtQueryInformationProcess")));
@@ -115,37 +120,28 @@ __forceinline int str_cmp(const wchar_t *x, const wchar_t *y)
 
 __forceinline BOOL nt_query_object_object_all_types_information()
 {
-  //NOTE this check is unreliable, a debugger present on the system doesn't mean it's attached to you
   const auto nt_query_object = reinterpret_cast<p_nt_query_object>(hash_GetProcAddress(
                                  hash_GetModuleHandleW(NTDLL_), (LPCSTR)PRINT_HIDE_STR("NtQueryObject")));
-  // Some vars
   ULONG size;
-  // Get the size of the information needed
   auto status = nt_query_object(nullptr, 3, &size, sizeof(ULONG), &size);
-  // Alocate memory for the list
   const auto p_memory = hash_VirtualAlloc(nullptr, (size_t)size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
   if (p_memory == nullptr)
     return FALSE;
-  // Now we can actually retrieve the list
   status = nt_query_object(reinterpret_cast<HANDLE>(-1), 3, p_memory, size, nullptr);
-  // Status != STATUS_SUCCESS
   if (status != 0x00000000)
   {
     hash_VirtualFree(p_memory, 0, MEM_RELEASE);
     return FALSE;
   }
-  // We have the information we need
   const auto p_object_all_info = static_cast<pobject_all_information>(p_memory);
   auto p_obj_info_location = reinterpret_cast<UCHAR *>(p_object_all_info->object_type_information);
   const auto num_objects = p_object_all_info->number_of_objects;
   for (UINT i = 0; i < num_objects; i++)
   {
     const auto pObjectTypeInfo = reinterpret_cast<pobject_type_information>(p_obj_info_location);
-    // The debug object will always be present
     if (str_cmp((const wchar_t *)(GetWC_l((LPCSTR)PRINT_HIDE_STR("DebugObject"))),
                 (const wchar_t *)(pObjectTypeInfo->type_name.Buffer)) == 0)
     {
-      // Are there any objects?
       if (pObjectTypeInfo->total_number_of_objects > 0)
       {
         hash_VirtualFree(p_memory, 0, MEM_RELEASE);
@@ -154,14 +150,9 @@ __forceinline BOOL nt_query_object_object_all_types_information()
       hash_VirtualFree(p_memory, 0, MEM_RELEASE);
       return FALSE;
     }
-    // Get the address of the current entries
-    // string so we can find the end
     p_obj_info_location = reinterpret_cast<unsigned char *>(pObjectTypeInfo->type_name.Buffer);
-    // Add the size
     p_obj_info_location += pObjectTypeInfo->type_name.MaximumLength;
-    // Skip the trailing null and alignment bytes
     auto tmp = reinterpret_cast<ULONG_PTR>(p_obj_info_location) & -static_cast<int>(sizeof(void *));
-    // Not pretty but it works
     if (static_cast<ULONG_PTR>(tmp) != reinterpret_cast<ULONG_PTR>(p_obj_info_location))
       tmp += sizeof(void *);
     p_obj_info_location = reinterpret_cast<unsigned char *>(tmp);
@@ -187,14 +178,12 @@ __forceinline BOOL process_job()
       for (DWORD i = 0; i < job_process_id_list->NumberOfAssignedProcesses; i++)
       {
         const auto process_id = job_process_id_list->ProcessIdList[i];
-        // is this the current process? if so that's ok
         if (process_id == static_cast<ULONG_PTR>(hash_GetCurrentProcessId()))
         {
           ok_processes++;
         }
         else
         {
-          // find the process name for this job process
           const auto h_job_process = hash_OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, static_cast<DWORD>(process_id));
           if (h_job_process != nullptr)
           {
@@ -206,7 +195,6 @@ __forceinline BOOL process_job()
               if (hash_K32GetProcessImageFileNameW(h_job_process, process_name, process_name_buffer_size) > 0)
               {
                 std::wstring pnStr(process_name);
-                // ignore conhost.exe (this hosts the al-khaser executable in a console)
                 if (pnStr.find(static_cast<std::wstring>(GetWC_l((LPCSTR)PRINT_HIDE_STR("\\Windows\\System32\\conhost.exe")))) != std::string::npos)
                 {
                   ok_processes++;
@@ -218,7 +206,6 @@ __forceinline BOOL process_job()
           }
         }
       }
-      // if we found other processes in the job other than the current process and conhost, report a problem
       found_problem = ok_processes != static_cast<int>(job_process_id_list->NumberOfAssignedProcesses);
     }
     free(job_process_id_list);
@@ -257,4 +244,31 @@ __forceinline BOOL titan_hide_check()
   const int ret = c_info.CodeIntegrityOptions & CODEINTEGRITY_OPTION_TESTSIGN || c_info.CodeIntegrityOptions &
                   CODEINTEGRITY_OPTION_DEBUGMODE_ENABLED;
   return ret;
+}
+
+__forceinline BOOL NtQuerySystemInformation_SystemKernelDebuggerInformation()
+{
+  const int SystemKernelDebuggerInformation = 0x23;
+  SYSTEM_KERNEL_DEBUGGER_INFORMATION KdDebuggerInfo;
+  const auto ntdll = hash_GetModuleHandleW(NTDLL_);
+  const auto NtQuerySystemInformation = reinterpret_cast<t_nt_query_system_information>(hash_GetProcAddress(
+                                          ntdll, (LPCSTR)PRINT_HIDE_STR("NtQuerySystemInformation")));
+  NTSTATUS Status = NtQuerySystemInformation(SystemKernelDebuggerInformation, &KdDebuggerInfo, sizeof(SYSTEM_KERNEL_DEBUGGER_INFORMATION), NULL);
+  if (Status >= 0)
+  {
+    if (KdDebuggerInfo.KernelDebuggerEnabled || !KdDebuggerInfo.KernelDebuggerNotPresent)
+      return TRUE;
+  }
+  return FALSE;
+}
+
+__forceinline BOOL SharedUserData_KernelDebugger()
+{
+  const ULONG_PTR UserSharedData = 0x7FFE0000;
+  const UCHAR KdDebuggerEnabledByte = *(UCHAR *)(UserSharedData + 0x2D4);
+  const BOOLEAN KdDebuggerEnabled = (KdDebuggerEnabledByte & 0x1) == 0x1;
+  const BOOLEAN KdDebuggerNotPresent = (KdDebuggerEnabledByte & 0x2) == 0;
+  if (KdDebuggerEnabled || !KdDebuggerNotPresent)
+    return TRUE;
+  return FALSE;
 }
