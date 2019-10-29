@@ -1384,3 +1384,11 @@ DWORD hash_K32GetProcessImageFileNameW(HANDLE hProcess,
                                           lpImageFileName,
                                           nSize);
 }
+HANDLE hash_GetCurrentThread()
+{
+  const char *func = (LPCSTR)PRINT_HIDE_STR("GetCurrentThread");
+  const auto _hash = t1ha0(func, strlen(func), STRONG_SEED);
+  temp_GetCurrentThread = static_cast<HANDLE(*)()>(get_api(_hash, (LPCSTR)PRINT_HIDE_STR("kernel32.dll"),
+                          strlen(func), STRONG_SEED));
+  return temp_GetCurrentThread();
+}
