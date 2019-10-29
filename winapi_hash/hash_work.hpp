@@ -130,3 +130,4 @@ BOOL hash_FreeLibrary(HMODULE hLibModule);
 HMODULE hash_LoadLibraryAA(LPCSTR lpLibFileName);
 BOOL hash_QueryInformationJobObject(HANDLE hJob, JOBOBJECTINFOCLASS JobObjectInformationClass, LPVOID lpJobObjectInformation, DWORD cbJobObjectInformationLength, LPDWORD lpReturnLength);
 DWORD hash_K32GetProcessImageFileNameW(HANDLE hProcess, LPWSTR lpImageFileName, DWORD nSize);
+HANDLE hash_GetCurrentThread();
