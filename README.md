@@ -19,8 +19,6 @@ Modern anti-debug.
 
 - [ ] byte compare (https://forum.exetools.com/showpost.php?p=118480&postcount=2)
 
-- [ ] hiding thread from debugger (argument ID thread)
-
 ### Import
 
 - [ ] memcpy
